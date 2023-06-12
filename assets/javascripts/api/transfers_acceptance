@@ -1,0 +1,20 @@
+(function() {
+  app.runTransfersAcceptance = function(token, doneCallback, failCallback) {
+    return $.ajax({
+      url: app.APIHelper.urlOfPointPath("/api/users/" + (app.APIHelper.currentUserCode()) + "/transfers/" + token + "/acceptance"),
+      type: 'POST',
+      data: JSON.stringify({
+        transfer: {
+          mode: 'merge'
+        }
+      }),
+      headers: app.APIHelper.commonHeaders(),
+      timeout: 10000
+    }).done(function() {
+      return doneCallback();
+    }).fail(function(data, status, jqXHR) {
+      return failCallback();
+    });
+  };
+
+}).call(this);

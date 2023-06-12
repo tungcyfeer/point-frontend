@@ -1,0 +1,76 @@
+(function() {
+  app.couponsIndex = function() {
+    var $coupons, groupCouponsByPoint, renderCoupons, renderCouponsItem, templates;
+    app.getCurrentPoint();
+    $coupons = $('.js-coupons');
+    templates = {
+      coupons: _.template($('.js-coupons-template').html()),
+      couponsShortagePoint: _.template($('.js-coupons-shortage-point-template').html()),
+      couponsItemWrapper: _.template($('.js-coupons-item-wrapper-template').html()),
+      couponsShortageItemWrapper: _.template($('.js-coupons-shortage-item-wrapper-template').html()),
+      couponsItemDetail: _.template($('.js-coupons-item-detail-template').html())
+    };
+    renderCoupons = function(point, coupons) {
+      var coupon, couponsItemHTML, couponsTemplate, currentPoint, i, isPointShortage, len;
+      currentPoint = parseInt($('.js-CurrentPoint').text());
+      isPointShortage = currentPoint < point;
+      couponsTemplate = isPointShortage ? templates.couponsShortagePoint : templates.coupons;
+      couponsItemHTML = '';
+      for (i = 0, len = coupons.length; i < len; i++) {
+        coupon = coupons[i];
+        couponsItemHTML += renderCouponsItem(coupon, isPointShortage);
+      }
+      return $coupons.append(couponsTemplate({
+        point: point,
+        contentsItems: couponsItemHTML
+      }));
+    };
+    renderCouponsItem = function(coupon, isPointShortage) {
+      var date, detail, items;
+      date = Date.popinfoParse(coupon.usable_end_at);
+      items = JSON.parse(coupon.additional_items);
+      detail = templates.couponsItemDetail({
+        title: coupon.name,
+        usableEndAt: Date.formatCouponDate(date),
+        imageUrl: items['thumbnail'] || items['image'],
+        providerName: coupon['providers__name'] || '全店舗'
+      });
+      if (isPointShortage) {
+        return templates.couponsShortageItemWrapper({
+          itemDetail: detail
+        });
+      } else {
+        return templates.couponsItemWrapper({
+          itemDetail: detail,
+          couponId: coupon.id
+        });
+      }
+    };
+    groupCouponsByPoint = function(coupons) {
+      var coupon, groups, i, len, name;
+      groups = {};
+      for (i = 0, len = coupons.length; i < len; i++) {
+        coupon = coupons[i];
+        groups[name = -coupon.action_platform_point] || (groups[name] = []);
+        groups[-coupon.action_platform_point].push(coupon);
+      }
+      return groups;
+    };
+    return $('.js-CurrentPoint').on('build', function() {
+      return $.ajax({
+        url: app.APIHelper.urlOfCouponsPath(),
+        type: 'GET',
+        timeout: 10000
+      }).done(function(data, status, jqXHR) {
+        var groups;
+        groups = groupCouponsByPoint(data.result.data);
+        return _.each(groups, function(coupons, point) {
+          return renderCoupons(point, coupons);
+        });
+      }).fail(function(data, status, jqXHR) {
+        return swal('クーポン一覧の取得に失敗しました');
+      });
+    });
+  };
+
+}).call(this);

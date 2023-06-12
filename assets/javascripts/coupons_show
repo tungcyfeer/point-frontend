@@ -1,0 +1,94 @@
+(function() {
+  app.couponsShow = function() {
+    var $coupon, couponId, getCoupon, getCouponById, getCouponClickable, getParameterByName, nl2br, renderCoupon, setCoupon, templates;
+    $coupon = $('.js-coupon');
+    templates = {
+      coupon: _.template($('.js-coupon-template').html())
+    };
+    renderCoupon = function(coupon) {
+      var couponTemplate, date, items;
+      couponTemplate = templates.coupon;
+      date = Date.popinfoParse(coupon.usable_end_at);
+      items = JSON.parse(coupon.additional_items);
+      return $coupon.append(couponTemplate({
+        point: -coupon.action_platform_point,
+        title: coupon.name,
+        shortDescription: nl2br(_.escape(coupon.short_description)),
+        description: nl2br(_.escape(coupon.description)),
+        usableEndAt: Date.formatCouponDate(date),
+        imageUrl: items['thumbnail'] || items['image'],
+        providerName: coupon['providers__name'] || '全店舗'
+      }));
+    };
+    getParameterByName = function(name) {
+      var regex, results;
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+      results = regex.exec(location.search);
+      if (results === null) {
+        return "";
+      } else {
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+    };
+    getCouponClickable = true;
+    $('.js-GetCouponButton').click(function(e) {
+      var code;
+      e.preventDefault();
+      if (!getCouponClickable) {
+        return;
+      }
+      getCouponClickable = false;
+      code = getCoupon().action_platform_code;
+      return app.runTrigger(code, function() {
+        return swal({
+          title: 'クーポン引き換えが完了しました',
+          allowOutsideClick: false
+        }, function() {
+          return location.href = "https://jp.popinfo.coupon/coupons/?uuid=" + code + "&action=focus";
+        });
+      }, function() {
+        swal('クーポン引き換えに失敗しました');
+        return getCouponClickable = true;
+      });
+    });
+    couponId = function() {
+      return parseInt(app.Params.valueOfName('coupon_id'));
+    };
+    getCouponById = function(coupons, couponId) {
+      var coupon, i, len;
+      for (i = 0, len = coupons.length; i < len; i++) {
+        coupon = coupons[i];
+        if (coupon.id === couponId) {
+          return coupon;
+        }
+      }
+    };
+    setCoupon = (function(_this) {
+      return function(coupon) {
+        return _this.coupon = coupon;
+      };
+    })(this);
+    getCoupon = (function(_this) {
+      return function() {
+        return _this.coupon;
+      };
+    })(this);
+    nl2br = function(str) {
+      return str.replace(/\r?\n|\r/g, '<br />');
+    };
+    return $.ajax({
+      url: app.APIHelper.urlOfCouponsPath(),
+      type: 'GET',
+      timeout: 10000
+    }).done(function(data, status, jqXHR) {
+      var coupon;
+      coupon = getCouponById(data.result.data, couponId());
+      setCoupon(coupon);
+      return renderCoupon(coupon);
+    }).fail(function(data, status, jqXHR) {
+      return swal('クーポンの取得に失敗しました');
+    });
+  };
+
+}).call(this);

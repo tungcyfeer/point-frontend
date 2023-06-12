@@ -1,0 +1,24 @@
+(function() {
+  app.getCurrentPoint = function() {
+    return $.ajax({
+      url: app.APIHelper.urlOfPointPath("/api/users/" + (app.APIHelper.currentUserCode()) + "/expirations"),
+      type: 'GET',
+      headers: app.APIHelper.commonHeaders(),
+      timeout: 10000
+    }).done(function(data, status, jqXHR) {
+      var expiredAt;
+      if (data.length) {
+        $('.js-CurrentPoint').text(data[0]['point']);
+        expiredAt = Date.popinfoParse(data[0]['expired_at']);
+        $('.js-PointExpiredAt').text((expiredAt.getFullYear()) + "年" + (expiredAt.getMonth() + 1) + "月末日");
+      } else {
+        $('.js-CurrentPoint').text(0);
+        $('.js-PointExpiredAt').text('-');
+      }
+      return $('.js-CurrentPoint').trigger('build');
+    }).fail(function(data, status, jqXHR) {
+      return swal('現在のポイントの取得に失敗しました');
+    });
+  };
+
+}).call(this);

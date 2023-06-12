@@ -1,0 +1,21 @@
+(function() {
+  app.runTrigger = function(triggerCode, doneCallback, failCallback) {
+    return $.ajax({
+      url: app.APIHelper.urlOfActionPath("/api/triggers/" + triggerCode + "/trigger_logs"),
+      type: 'POST',
+      data: JSON.stringify({
+        trigger_log: {
+          user_code: app.APIHelper.currentUserCode(),
+          dtype: app.APIHelper.dtype()
+        }
+      }),
+      headers: app.APIHelper.commonHeaders(),
+      timeout: 10000
+    }).done(function() {
+      return doneCallback();
+    }).fail(function(data, status, jqXHR) {
+      return failCallback();
+    });
+  };
+
+}).call(this);

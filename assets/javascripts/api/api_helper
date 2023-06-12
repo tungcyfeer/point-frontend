@@ -1,0 +1,62 @@
+(function() {
+  var APIHelper;
+
+  APIHelper = (function() {
+    var ACTION_API_END_POINT, COUPON_JSON_END_POINT, POINT_API_END_POINT, SHOP_NAME;
+
+    function APIHelper(popinfoId1) {
+      this.popinfoId = popinfoId1;
+    }
+
+    APIHelper.prototype.commonHeaders = function() {
+      return {
+        'X-POPINFO-SHOP-NAME': this.shop_name(),
+        'Content-Type': 'application/json'
+      };
+    };
+
+    APIHelper.prototype.currentUserCode = function() {
+      return this.popinfoId;
+    };
+
+    APIHelper.prototype.dtype = function() {
+      if (navigator.userAgent.match(/iP(hone|ad|od)/i)) {
+        return 'i';
+      } else {
+        return 'a';
+      }
+    };
+
+    POINT_API_END_POINT = $('meta[name=point-platform]').data('end-point');
+
+    ACTION_API_END_POINT = $('meta[name=action-platform]').data('end-point');
+
+    COUPON_JSON_END_POINT = $('meta[name=coupon-json]').data('end-point');
+
+    SHOP_NAME = $('meta[name=shop]').data('name');
+
+    APIHelper.prototype.urlOfPointPath = function(path) {
+      return "" + POINT_API_END_POINT + path;
+    };
+
+    APIHelper.prototype.urlOfActionPath = function(path) {
+      return "" + ACTION_API_END_POINT + path;
+    };
+
+    APIHelper.prototype.urlOfCouponsPath = function() {
+      return COUPON_JSON_END_POINT + "/available_coupons/" + (this.shop_name()) + "/coupons.json";
+    };
+
+    APIHelper.prototype.shop_name = function() {
+      return SHOP_NAME;
+    };
+
+    return APIHelper;
+
+  })();
+
+  app.createAPIHelper = function(popinfoId) {
+    return new APIHelper(popinfoId);
+  };
+
+}).call(this);

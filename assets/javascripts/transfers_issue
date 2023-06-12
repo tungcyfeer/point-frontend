@@ -1,0 +1,25 @@
+(function() {
+  app.transfersIssue = function() {
+    var $transferIssue, renderTransfer, templates;
+    $transferIssue = $('.js-transfer-issue');
+    templates = {
+      transfer: _.template($('.js-transfer-template').html())
+    };
+    renderTransfer = function(transfer) {
+      var transferTemplate;
+      transferTemplate = templates.transfer;
+      return $transferIssue.append(transferTemplate({
+        token: transfer.token
+      }));
+    };
+    return app.runTransfers(renderTransfer, function() {
+      return swal({
+        title: 'ポイント引き継ぎコードの発行に失敗しました',
+        allowOutsideClick: false
+      }, function() {
+        return location.href = '/points';
+      });
+    });
+  };
+
+}).call(this);

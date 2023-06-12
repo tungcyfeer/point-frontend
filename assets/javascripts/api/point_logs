@@ -1,0 +1,61 @@
+(function() {
+  $(function() {
+    var clonePointLogTr, inDisplayingPeriod, renderPointLog;
+    if ($('.js-PointLogs').length) {
+      $.ajax({
+        url: app.APIHelper.urlOfPointPath("/api/users/" + (app.APIHelper.currentUserCode()) + "/point_logs?limit=100"),
+        type: 'GET',
+        headers: app.APIHelper.commonHeaders(),
+        timeout: 10000
+      }).done(function(data, status, jqXHR) {
+        return $.each(data, function(index, pointLog) {
+          return renderPointLog(index, pointLog);
+        });
+      }).fail(function(data, status, jqXHR) {
+        return alert('ポイント履歴の取得に失敗しました');
+      });
+      renderPointLog = function(index, pointLog) {
+        var createdAt, tr;
+        createdAt = new Date(pointLog['created_at']);
+        if (!inDisplayingPeriod(createdAt)) {
+          return true;
+        }
+        if (0 < index) {
+          clonePointLogTr();
+        }
+        tr = $(".js-PointLogs tbody tr:nth-of-type(" + (index + 1) + ")");
+        tr.find('.js-PointLog-CreatedAt').text((createdAt.getFullYear()) + "/" + (createdAt.getMonth() + 1) + "/" + (createdAt.getDate()));
+        tr.find('.js-PointLog-Name').text(pointLog['name']);
+        if (0 <= pointLog['point']) {
+          tr.find('.js-PointLog-GainPoint').text(pointLog['point']);
+        } else {
+          tr.find('.js-PointLog-LosePoint').text(-pointLog['point']);
+        }
+        return tr.show();
+      };
+      clonePointLogTr = function() {
+        var newTr;
+        newTr = $('.js-PointLogs tbody tr:nth-of-type(1)').clone().appendTo('.js-PointLogs tbody');
+        newTr.find('.js-PointLog-CreatedAt').text('');
+        newTr.find('.js-PointLog-Name').text('');
+        newTr.find('.js-PointLog-GainPoint').text('');
+        newTr.find('.js-PointLog-LosePoint').text('');
+        return newTr.show();
+      };
+      return inDisplayingPeriod = function(createdAt) {
+        var date, periodMonths;
+        periodMonths = 6;
+        date = new Date();
+        date.setDate(1);
+        if (periodMonths <= date.getMonth()) {
+          date.setMonth(date.getMonth() - periodMonths);
+        } else {
+          date.setFullYear(date.getFullYear() - 1);
+          date.setMonth(date.getMonth() + 12 - periodMonths);
+        }
+        return date < createdAt;
+      };
+    }
+  });
+
+}).call(this);

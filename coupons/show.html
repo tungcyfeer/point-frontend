@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no' name='viewport'>
+    <meta content='telephone=no' name='format-detection'>
+    <meta data-end-point='https://end-user-point-platform.point.popinfo.jp' name='point-platform'>
+    <meta data-end-point='https://end-user-action-platform.point.popinfo.jp' name='action-platform'>
+    <meta data-end-point='https://s3-ap-northeast-1.amazonaws.com/coupon.point.popinfo.jp' name='coupon-json'>
+    <meta data-name='SmartLifeStation-dev' name='shop'>
+    <title>Popinfoポイント</title>
+    <link href="../assets/stylesheets/all-01bddb9a.css" rel="stylesheet" />
+    <script src="../assets/javascripts/all-ad53def4.js"></script>
+  </head>
+  <body class='coupons coupons_show'>
+    <form class='Coupons js-WithoutLoading'>
+      <p class='Coupons-note'>
+        以下クーポンに交換します。
+        <br>
+        よろしいですか？
+      </p>
+      <div class='js-coupon'></div>
+      <script class='js-coupon-template' type='text/template'>
+        <h2 class='Coupons-title'><span><%- point %></span><span>ポイント対象クーポン</span></h2>
+        <div class='Coupons-contentsItem'>
+          <p class='Coupons-contentsImage' style='background-image: url(<%= imageUrl %>)'></p>
+          <div class='Coupons-contentsTexts'>
+            <h3 class='Coupons-contentsTitle'><%- title %></h3>
+            <p class='Coupons-contentsAvailable'><span>有効期限：</span><span><%= usableEndAt %></span><span>まで</span><br><span><%= providerName %></span><span>で利用可能</span><br><span><%= shortDescription %></span></p>
+          </div>
+          <p class='Coupons-contentsDesc'><%= description %></p>
+        </div>
+      </script>
+      <p class='Coupons-button'>
+        <button class='Button -typeNormal -sizeMedium js-GetCouponButton' type='submit'><img width="20" height="10" alt="OK" src="../assets/images/btn02@2x-5c0088bb.png" /></button>
+      </p>
+    </form>
+    <div class='Loading js-Loading'>
+      <span class='Loading-item'></span>
+      <span class='Loading-item'></span>
+      <span class='Loading-item'></span>
+    </div>
+  </body>
+</html>

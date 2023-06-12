@@ -1,0 +1,6 @@
+(function() {
+  app.index = function() {
+    return app.getCurrentPoint();
+  };
+
+}).call(this);

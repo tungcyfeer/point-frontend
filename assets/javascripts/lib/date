@@ -1,0 +1,12 @@
+(function() {
+  Date.popinfoParse = function(string) {
+    var formattedString;
+    formattedString = string.replace(/\+(\d{2})(\d{2})$/, '+$1:$2');
+    return new Date(formattedString);
+  };
+
+  Date.formatCouponDate = function(date) {
+    return (date.getFullYear()) + "年" + (date.getMonth() + 1) + "月" + (date.getDate()) + "日 " + (date.getHours()) + ":" + (('0' + date.getMinutes()).slice(-2));
+  };
+
+}).call(this);

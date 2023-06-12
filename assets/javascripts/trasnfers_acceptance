@@ -1,0 +1,25 @@
+(function() {
+  app.transfersAcceptance = function() {
+    var transfersAcceptanceClickable;
+    transfersAcceptanceClickable = true;
+    return $('.js-TransfersAcceptanceButton').click(function(e) {
+      e.preventDefault();
+      if (!transfersAcceptanceClickable) {
+        return;
+      }
+      transfersAcceptanceClickable = false;
+      return app.runTransfersAcceptance($('.js-TransferToken').val(), function() {
+        return swal({
+          title: 'ポイントの引き継ぎが完了しました',
+          allowOutsideClick: false
+        }, function() {
+          return location.href = "/points";
+        });
+      }, function() {
+        swal('ポイントの引き継ぎに失敗しました');
+        return transfersAcceptanceClickable = true;
+      });
+    });
+  };
+
+}).call(this);

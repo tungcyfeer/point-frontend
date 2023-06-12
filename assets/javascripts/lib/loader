@@ -1,0 +1,19 @@
+(function() {
+  app.Loader = (function() {
+    function Loader(selector) {
+      this.$el = $(selector);
+    }
+
+    Loader.prototype.show = function() {
+      return this.$el.fadeIn('fast');
+    };
+
+    Loader.prototype.hide = function() {
+      return this.$el.fadeOut('fast');
+    };
+
+    return Loader;
+
+  })();
+
+}).call(this);

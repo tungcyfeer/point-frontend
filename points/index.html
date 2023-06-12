@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no' name='viewport'>
+    <meta content='telephone=no' name='format-detection'>
+    <meta data-end-point='https://end-user-point-platform.point.popinfo.jp' name='point-platform'>
+    <meta data-end-point='https://end-user-action-platform.point.popinfo.jp' name='action-platform'>
+    <meta data-end-point='https://s3-ap-northeast-1.amazonaws.com/coupon.point.popinfo.jp' name='coupon-json'>
+    <meta data-name='SmartLifeStation-dev' name='shop'>
+    <title>Popinfoポイント</title>
+    <link href="../assets/stylesheets/all-01bddb9a.css" rel="stylesheet" />
+    <script src="../assets/javascripts/all-ad53def4.js"></script>
+  </head>
+  <body class='points points_index'>
+    <div class='Point'>
+      <div class='Point-topText'>現在のポイント</div>
+      <div class='Point-count js-CurrentPoint'>-</div>
+      <div class='Point-expiration'>
+        <span>有効期限：</span>
+        <span class='js-PointExpiredAt'>-</span>
+      </div>
+      <div class='Point-button'>
+        <a class="Button -typeNormal -sizeMedium" href="../coupons/index.html"><img width="179" hight="13" alt="ポイントをクーポンに交換する" src="../assets/images/btn01@2x-b5809a78.png" /></a>
+      </div>
+      <div class='Point-button -withPointChange'>
+        <a class="Point-link" href="/transfers">ポイント引き継ぎ</a>
+      </div>
+      <script class='js-point-log-template' type='text/template'>
+        <tr class='PointLog-listItem'>
+          <td><span class='PointLog-date'><%= createdAt %></span><span class='PointLog-text'><%= name %></span></td><td class='PointLog-count'><%= gainPoint %></td><td class='PointLog-count'><%= losePoint %></td></tr>
+      </script>
+      <script class='js-point-log-empty-template' type='text/template'>
+        <tr class='PointLog-listItem'>
+          <td colspan='3'>履歴がありません。</td>
+        </tr>
+      </script>
+    </div>
+    <div class='PointLog'>
+      <table class='PointLog-table'>
+        <thead>
+          <tr>
+            <th class='PointLog-title'>ポイント履歴</th>
+            <th class='PointLog-title -sizeShort'>獲得</th>
+            <th class='PointLog-title -sizeShort'>利用</th>
+          </tr>
+        </thead>
+        <tbody class='js-pointLogs'></tbody>
+      </table>
+    </div>
+    <div class='Loading js-Loading'>
+      <span class='Loading-item'></span>
+      <span class='Loading-item'></span>
+      <span class='Loading-item'></span>
+    </div>
+  </body>
+</html>

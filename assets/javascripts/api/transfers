@@ -1,0 +1,15 @@
+(function() {
+  app.runTransfers = function(doneCallback, failCallback) {
+    return $.ajax({
+      url: app.APIHelper.urlOfPointPath("/api/users/" + (app.APIHelper.currentUserCode()) + "/transfers"),
+      type: 'POST',
+      headers: app.APIHelper.commonHeaders(),
+      timeout: 10000
+    }).done(function(data, status, jqXHR) {
+      return doneCallback(data);
+    }).fail(function(data, status, jqXHR) {
+      return failCallback();
+    });
+  };
+
+}).call(this);

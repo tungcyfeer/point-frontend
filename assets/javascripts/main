@@ -1,0 +1,56 @@
+(function() {
+  $(function() {
+    var loader, main, popinfo, renderPage, runTriggerIfNeeded;
+    loader = new app.Loader('.js-Loading');
+    if ($('.js-WithoutLoading').length) {
+      loader.hide();
+    } else {
+      $(document).ajaxStop(function() {
+        return loader.hide();
+      });
+    }
+    swal.setDefaults({
+      confirmButtonColor: '#007461',
+      allowOutsideClick: true,
+      animation: false
+    });
+    runTriggerIfNeeded = function() {
+      if (app.Params.valueOfName('action') === 'triggers' && app.Params.valueOfName('code') !== null) {
+        return app.runTrigger(app.Params.valueOfName('code'), function() {
+          renderPage();
+          return swal('ポイントを獲得しました');
+        }, function() {
+          renderPage();
+          return swal('ポイントの獲得に失敗しました');
+        });
+      } else {
+        return renderPage();
+      }
+    };
+    renderPage = function() {
+      if ($('.index')[0]) {
+        return app.index();
+      } else if ($('.coupons_index')[0]) {
+        return app.couponsIndex();
+      } else if ($('.coupons_show')[0]) {
+        return app.couponsShow();
+      } else if ($('.points_index')[0]) {
+        return app.pointsIndex();
+      } else if ($('.transfers_issue')[0]) {
+        return app.transfersIssue();
+      } else if ($('.transfers_acceptance')[0]) {
+        return app.transfersAcceptance();
+      }
+    };
+    main = function() {
+      return runTriggerIfNeeded();
+    };
+    popinfo = new Popinfo;
+    popinfo.on('popinfoId', function(id) {
+      app.APIHelper = app.createAPIHelper(id);
+      return main();
+    });
+    return popinfo.getPopinfoId();
+  });
+
+}).call(this);
